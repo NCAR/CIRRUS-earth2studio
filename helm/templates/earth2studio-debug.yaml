@@ -1,0 +1,70 @@
+{{- range $name, $job := .Values.jobs }}
+{{- if $job.enabled }}
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ $job.name }}-{{ randAlphaNum 5 | lower }}
+  namespace: {{ $.Release.Namespace }}
+  labels:
+    app: {{ $.Values.webapp.name }}
+    group: {{ $.Values.webapp.group }}
+spec:
+  template:
+    metadata:
+      labels:
+        app: {{ $job.name }}
+    spec:
+      restartPolicy: Never
+      runtimeClassName: nvidia
+      securityContext:
+        fsGroup: 1000
+      volumes:
+        - name: {{ $.Values.webapp.volume1.name }}
+          nfs:
+            server: {{ $.Values.webapp.volume1.server }}
+            path: {{ $.Values.webapp.volume1.path }}
+            readOnly: {{ $.Values.webapp.volume1.readOnly }}
+        - name: {{ $.Values.webapp.volume2.name }}
+          persistentVolumeClaim:
+            claimName: {{ $.Values.webapp.volume2.name }}
+        - name: {{ $.Values.webapp.volume3.name }}
+          persistentVolumeClaim:
+            claimName: {{ $.Values.webapp.volume3.name }}
+        - name: {{ $.Values.webapp.extraVolumes.name }}
+          emptyDir:
+            medium: {{ $.Values.webapp.extraVolumes.emptyDir.medium }}
+            sizeLimit: {{ $.Values.webapp.extraVolumes.emptyDir.sizeLimit }}
+      containers:
+      - name: {{ $job.name }}
+        image: {{ $.Values.webapp.container.image }}
+        imagePullPolicy: {{ $.Values.webapp.imagePullPolicy }}
+        securityContext:
+          runAsUser: 1000
+          capabilities:
+            add: ["IPC_LOCK"]
+        command: {{ toJson $job.command }}
+        args:
+          - |
+            {{ $job.args | nindent 12 }}
+        tty: true
+        resources:
+          limits:
+            memory: {{ $.Values.webapp.container.limits.memory }}
+            cpu: {{ $.Values.webapp.container.limits.cpu }}
+            nvidia.com/gpu: "1"
+          requests:
+            memory: {{ $.Values.webapp.container.requests.memory }}
+            cpu: {{ $.Values.webapp.container.requests.cpu }}
+            nvidia.com/gpu: "1"
+        volumeMounts:
+        - mountPath: /glade/campaign
+          name: {{ $.Values.webapp.volume1.name }}
+        - mountPath: /output
+          name: {{ $.Values.webapp.volume2.name }}
+        - mountPath: /checkpoint
+          name: {{ $.Values.webapp.volume3.name }}
+        - mountPath: /dev/shm
+          name: {{ $.Values.webapp.extraVolumes.name }}
+---
+{{- end }}
+{{- end }}

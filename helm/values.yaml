@@ -1,0 +1,68 @@
+replicaCount: 1
+
+webapp:
+  name: earth2studio
+  group: earth2studio
+  imagePullPolicy: Always
+  path: /
+  tls:
+    fqdn: earth2studio.k8s.ucar.edu
+    secretName: incommon-cert-earth2studio
+  volume1:
+    name: campaign
+    server: gladedm1.ucar.edu
+    path: /gpfs/csfs1
+    readOnly: true
+  volume2:
+    name: output
+    mountPath: /output
+    size: 160Gi
+    securityContext:
+      runAsGroup: 1000
+  volume3:
+    name: checkpoint
+    mountPath: /checkpoint
+    size: 100Gi
+    securityContext:
+      runAsGroup: 1000
+  extraVolumes:
+    name: dshm
+    emptyDir:
+      medium: Memory
+      sizeLimit: 128Gi
+  container: 
+    image: docker.io/sgpearse/earth2studio:1.0.0
+    port: 8080
+    requests: 
+      memory: 128Gi
+      cpu: 2
+    limits: 
+      memory: 128Gi
+      cpu: 8
+
+jobs:
+  debug:
+    enabled: true
+    name: earth2studio-debug
+    command: ["/bin/bash", "-c"]
+    args: |
+      python -m "import earth2studio; earth2studio.__version__"
+      #cd /workspace/CIRRUS-MILES-CREDIT
+      #git pull
+      #chmod 777 credit.sh
+      #./credit.sh
+
+cronjobs:
+  credit:
+    enabled: false
+    name: earth2studio-cron
+    #schedule: "0 0,6,12,18 * * *"
+    schedule: "0 * * * *"
+    timeZone: "America/Denver"
+    command: ["/bin/bash", "-c"]
+    args: |
+      python -m "import earth2studio; earth2studio.__version__"
+      #conda activate credit
+      #git clone https://github.com/NCAR/CIRRUS-MILES-CREDIT.git
+      #chmod 777 ./CIRRUS-MILES-CREDIT/credit.sh
+      #./CIRRUS-MILES-CREDIT/credit.sh
