@@ -49,9 +49,9 @@ jobs:
       echo START
       python -c "import earth2studio; print(earth2studio.__version__)"
       git clone https://github.com/NVIDIA/physicsnemo.git
+      git clone https://github.com/NVIDIA/earth2studio.git
       pip install -e physicsnemo/
       pip install warp-lang cartopy
-      git clone https://github.com/NVIDIA/earth2studio.git
       python earth2studio/examples/01_deterministic_workflow.py
       #python -c "import earth2studio; earth2studio.__version__"
       #cd /workspace/CIRRUS-MILES-CREDIT
