@@ -46,7 +46,7 @@ jobs:
     name: earth2studio-debug
     command: ["/bin/bash", "-c"]
     args: |
-      python -m "import earth2studio; earth2studio.__version__"
+      python -c "import earth2studio; earth2studio.__version__"
       #cd /workspace/CIRRUS-MILES-CREDIT
       #git pull
       #chmod 777 credit.sh
