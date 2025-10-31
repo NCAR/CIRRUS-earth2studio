@@ -52,17 +52,17 @@ jobs:
       #chmod 777 credit.sh
       #./credit.sh
 
-cronjobs:
-  credit:
-    enabled: false
-    name: earth2studio-cron
-    #schedule: "0 0,6,12,18 * * *"
-    schedule: "0 * * * *"
-    timeZone: "America/Denver"
-    command: ["/bin/bash", "-c"]
-    args: |
-      python -m "import earth2studio; earth2studio.__version__"
-      #conda activate credit
-      #git clone https://github.com/NCAR/CIRRUS-MILES-CREDIT.git
-      #chmod 777 ./CIRRUS-MILES-CREDIT/credit.sh
-      #./CIRRUS-MILES-CREDIT/credit.sh
+#cronjobs:
+#  credit:
+#    enabled: false
+#    name: earth2studio-cron
+#    #schedule: "0 0,6,12,18 * * *"
+#    schedule: "0 * * * *"
+#    timeZone: "America/Denver"
+#    command: ["/bin/bash", "-c"]
+#    args: |
+#      python -m "import earth2studio; earth2studio.__version__"
+#      #conda activate credit
+#      #git clone https://github.com/NCAR/CIRRUS-MILES-CREDIT.git
+#      #chmod 777 ./CIRRUS-MILES-CREDIT/credit.sh
+#      #./CIRRUS-MILES-CREDIT/credit.sh
