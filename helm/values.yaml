@@ -13,18 +13,6 @@ webapp:
     server: gladedm1.ucar.edu
     path: /gpfs/csfs1
     readOnly: true
-  volume2:
-    name: output
-    mountPath: /output
-    size: 160Gi
-    securityContext:
-      runAsGroup: 1000
-  volume3:
-    name: checkpoint
-    mountPath: /checkpoint
-    size: 100Gi
-    securityContext:
-      runAsGroup: 1000
   extraVolumes:
     name: dshm
     emptyDir:
